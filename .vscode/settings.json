@@ -1,0 +1,8 @@
+{
+    "mdb.presetConnections": [
+        {
+            "name": "My DB",
+            "connectionString": "mongodb+srv://tien0bip009_db_user:FnuxGH8yh8Zx4nau@myweb.uqnobqd.mongodb.net/"
+        }
+    ]
+}
