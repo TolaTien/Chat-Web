@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import Users from "../models/user.model";
 import bcrypt, { compareSync } from "bcrypt";
 import { createToken, createRefreshToken } from "../services/jwt";
+import cloudinary from "../config/cloudinary";
+import { uploadStream } from "../middlewares/upload";
 
 
 
@@ -92,6 +94,32 @@ class User {
         }
     }
 
+    //upload profile
+        async updateProfile(req: Request, res: Response){
+            try{
+                
+                const userId = req.user?.userId;
+
+                if( !req.file ){
+                    return res.status(400).json({message: "Hãy tải ảnh lên ảnh của bạn!"})
+                }
+
+                if (!req.file.mimetype.startsWith("image")) {
+                return res.status(400).json({
+                    message: "Vui lòng chỉ tải lên ảnh"
+                });
+                }
+
+                const upload = await uploadStream(req.file.buffer)
+                const updateUser = await Users.findByIdAndUpdate(userId, {avt: upload.secure_url}, { returnDocument: 'after' });
+                return res.status(200).json({message: "Cập nhật ảnh đại diện thành công!", data: updateUser});
+            }catch(err: any){
+                console.log("Cập nhật ảnh đại diện thất bại",err);
+                return res.status(500).json({message: "Lỗi server"})
+            }
+        }
+    
+
 
     //getuser
     async getUser(req: Request, res: Response) {
@@ -102,7 +130,7 @@ class User {
                 return res.status(400).json({message: "User không tồn tại!"});
             }
             const nameUser = user?.fullName
-            return res.status(200).json({message: "Lấy user thành công", data: {nameUser}})
+            return res.status(200).json({message: "Lấy user thành công", data: nameUser})
         }catch(err){
             return res.status(400).json({message: "Lỗi server"})
         }
