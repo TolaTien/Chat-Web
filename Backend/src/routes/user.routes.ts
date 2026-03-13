@@ -9,6 +9,7 @@ userRouters.post('/register', User.register)
 userRouters.get('/getUser',authUser, User.getUser)
 userRouters.post('/login', User.login);
 userRouters.post('/logout', authUser, User.logout);
-userRouters.post('/upload', authUser, upload.single("avatar") , User.updateProfile)
+userRouters.put('/upload', authUser, upload.single("avatar") , User.updateProfile)
+userRouters.get('/check', authUser, User.checkAuth)
 
 export default userRouters;

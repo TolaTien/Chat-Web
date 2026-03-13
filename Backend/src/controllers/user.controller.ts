@@ -137,6 +137,15 @@ class User {
 
     }
 
+    async checkAuth(req: Request, res: Response) {
+        try{
+            return res.status(200).json(req.user);
+        }catch(err: any){
+            console.log(err);
+            return res.status(500).json({message: "Lỗi server"})
+        }
+    }
+
 }
 
 
